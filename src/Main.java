@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
@@ -17,7 +19,7 @@ public class Main {
 
     static String menuCartas = "\n INGRESE COMO LE GUSTARIA GUARDAR LAS CARTAS \n" +
             "\t1. HashMap \n" +
-            "\t2. HastTree \n" +
+            "\t2. TreeMap \n" +
             "\t3. LinkedHashMap ";
 
     static String menuOpciones = "\n OPCIONES \n" +
@@ -34,8 +36,7 @@ public class Main {
         boolean deleViaje = true;
         Scanner input = new Scanner(System.in);
         FactoryCartas factory = new FactoryCartas();
-        Map CartaUsada = factory.getImplementacion("1");
-        Map CollecionPersonal =factory.getImplementacion("1");
+
 
         do {
             System.out.print(menuCartas);
@@ -49,7 +50,7 @@ public class Main {
                     seguir = true;
                     break;
                 case "2":
-                    System.out.println("Se guardaran las cartas como HashTree");
+                    System.out.println("Se guardaran las cartas como TreeMap");
                     seguir = true;
                     break;
                 case "3":
@@ -72,8 +73,8 @@ public class Main {
                     File archivoUsuario = new File(archivo);
                     //El codigo de buffered reader es tomado de la siguiente pagina.
                     //https://stackoverflow.com/questions/5868369/how-to-read-a-large-text-file-line-by-line-using-java
-                    CartaUsada = factory.getImplementacion(listo);
-                    CollecionPersonal = factory.getImplementacion(listo);
+                    Map<String,Cartas> CartaUsada = factory.getImplementacion(listo);
+                    Map<String,Cartas> CollecionPersonal = factory.getImplementacion(listo);
                     try (BufferedReader br = new BufferedReader(new FileReader(archivoUsuario))) {
                         String line;
                         while ((line = br.readLine()) != null) {
@@ -96,9 +97,15 @@ public class Main {
                                     System.out.println("Si el nombre no es aceptado al primer intento ponga el nombre de nuevo, es por un problema de cache \n");
                                     String nada = input.nextLine();
                                     String cartadeseada = input.nextLine();
+
                                     if (CartaUsada.containsKey(cartadeseada)) {
+                                        Cartas card =(Cartas)CartaUsada.get(cartadeseada);
+                                        System.out.println("Cuantas cartas quiere agregar? (Ingrese un numero):\n");
+                                        System.out.println("Si el numero no es aceptado al primer intento ponga el numero de nuevo, es por un problema de cache \n");
+                                        String numero = input.nextLine();
+                                        Integer.parseInt(numero);
+                                        card.setCantidad(Integer.parseInt(numero));
                                         CollecionPersonal.put(cartadeseada,CartaUsada.get(cartadeseada));
-                                        // TODO: 2019-03-03 hacer que se agregue como favorita
                                         System.out.print("Se agrego: \n" + CartaUsada.get(cartadeseada) +"a su coleccion correctamente.\n");
                                     } else
                                         System.out.println("No se encontro una carta con ese nombre, no se pudo agregar a su coleccion \n");
@@ -117,26 +124,70 @@ public class Main {
 
                                 case 3:
                                     System.out.println("Se van a imprimir todas las cartas de la coleccion del usuario: \n");
-                                    System.out.print(CollecionPersonal);
+                                    System.out.print(CollecionPersonal.values());
                                     //Mostrar cartas de la coleccion del usuario
-
                                     break;
 
                                 case 4:
                                     // Mostrar cartas de la coleccion ordenadas por tipo
+                                    ArrayList<Cartas> Monstruo = new ArrayList<>();
+                                    ArrayList<Cartas> Trampa = new ArrayList<>();
+                                    ArrayList<Cartas> Hechizo = new ArrayList<>();
+                                    for (Map.Entry<String,Cartas> wazawaza : CollecionPersonal.entrySet()) {
+
+                                        if (wazawaza.getValue().getTipo().equals("Monstruo")){
+                                            Monstruo.add(wazawaza.getValue());
+                                        }else if (wazawaza.getValue().getTipo().equals("Trampa")){
+                                            Trampa.add(wazawaza.getValue());
+
+                                        }else if (wazawaza.getValue().getTipo().equals("Hechizo")){
+                                            Hechizo.add(wazawaza.getValue());
+                                        }
+                                    }
+                                    for (Cartas card: Monstruo){
+                                        System.out.println(Monstruo);
+                                    }
+                                    for (Cartas card: Trampa){
+                                        System.out.println(Trampa);
+                                    }
+                                    for (Cartas card: Hechizo){
+                                        System.out.println(Hechizo);
+                                    }
                                     // TODO: 2019-03-03
                                     break;
 
                                 case 5:
                                     //Mostrar cartas existentes
                                     System.out.println("Se van a imprimir todas las cartas existentes: \n");
-                                    System.out.print(CartaUsada);
+                                    System.out.print(CartaUsada.values());
                                     break;
 
                                 case 6:
-
-                                    System.out.print(CartaUsada.containsValue(""));
                                     //Mostrar cartas existentes ordenadas por tipo
+
+                                    ArrayList<Cartas> Monster = new ArrayList<>();
+                                    ArrayList<Cartas> Trampas = new ArrayList<>();
+                                    ArrayList<Cartas> Hechizos = new ArrayList<>();
+                                    for (Map.Entry<String,Cartas> wazawaza : CartaUsada.entrySet()) {
+
+                                     if (wazawaza.getValue().getTipo().equals("Monstruo")){
+                                         Monster.add(wazawaza.getValue());
+                                     }else if (wazawaza.getValue().getTipo().equals("Trampa")){
+                                         Trampas.add(wazawaza.getValue());
+
+                                    }else if (wazawaza.getValue().getTipo().equals("Hechizo")){
+                                         Hechizos.add(wazawaza.getValue());
+                                     }
+                                    }
+                                    for (Cartas card: Monster){
+                                        System.out.println(Monster);
+                                    }
+                                    for (Cartas card: Trampas){
+                                        System.out.println(Trampas);
+                                    }
+                                    for (Cartas card: Hechizos){
+                                        System.out.println(Hechizos);
+                                    }
                                     break;
 
                                 case 7:
